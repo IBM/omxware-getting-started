@@ -1,7 +1,10 @@
 # Get Started
-Repository of Jupyter Notebooks to get started with OMXWare Python SDK.
+We've included several Jupyter Notebooks to help you get started using the Python SDK for the IBM Functional Genomics Platform (formerly named OMXWare).  
 
-Feel free to clone / fork the repo and Get started! Let us know, if you have any questions.
+**Note:** the package name has not changed so we can maintain backwards compatibility and minimize code breakage
 
-OMXWare: https://ibm.biz/omxware  
-Forums : https://ibm.biz/omxware-forum
+Feel free to clone / fork the repo and get started! Let us know, if you have any questions.
+
+IBM Functional Genomics Platform: https://ibm.biz/functional-genomics 
+SDK Docs: https://ibm.biz/functional-genomics-sdk-docs
+Forums: https://ibm.biz/functional-genomics-forum
