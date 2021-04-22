@@ -1,0 +1,1 @@
+A Docker container with the contents necessary to identify the comprehensive set of the molecular targets for SARS-CoV-2 with high accuracy
