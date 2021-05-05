@@ -1,0 +1,47 @@
+--- prokka-1.14.5/bin/prokka-uniprot_to_fasta_db	2019-11-11 01:49:19.000000000 -0600
++++ /Users/eseabolt/git/docker-prokka/prokka-1.14.5/bin/prokka-uniprot_to_fasta_db	2020-04-27 15:48:16.000000000 -0500
+@@ -7,7 +7,7 @@
+ #use SWISS::OC;
+ use Data::Dumper;
+ 
+-my(@Options, $verbose, $frag, $evlev, $minlen, $maxlen, $sep, $blank, $term, $hypo);
++my(@Options, $verbose, $frag, $evlev, $minlen, $maxlen, $sep, $blank, $term, $hypo, $covid19);
+ setOptions();
+ 
+ my $HYPO = 'hypothetical protein'; 
+@@ -73,16 +73,19 @@
+   if (1) {  
+     for my $de ($entry->DEs->elements) {
+       if ($de->type eq 'EC') {
+-	$ec = $de->text;
+-	$ec =~ s/^\D*//;
+-#	last;
++				$ec = $de->text;
++				$ec =~ s/^\D*//;
++				#	last;
+       }
+       elsif ($de->type eq 'Full' and $de->category eq 'RecName') {
+-	$prod = $de->text;
+-	if ($prod =~ m/^UPF\d|^Uncharacterized protein|^ORF|^Protein /) {
+-          next if ! $hypo;
+-	  $prod = $HYPO;
+-	}
++				$prod = $de->text;
++				if (!$covid19 and $prod =~ m/^UPF\d|^Uncharacterized protein|^ORF|^Protein /) {
++					next if ! $hypo;
++					$prod = $HYPO;
++				}
++      }
++      elsif ($covid19 and $de->type eq 'Full' and $de->category eq 'SubName') {
++				$prod = $de->text;
+       }
+       last if $prod and $ec;  # we have some data now, exit out
+     }
+@@ -123,6 +126,7 @@
+     {OPT=>"maxlen=i",   VAR=>\$maxlen, DEFAULT=>1E5, DESC=>"Maximum peptide length"},
+     {OPT=>"term=s",   VAR=>\$term, DEFAULT=>'', DESC=>"Lineage must contain this term eg. 'Bacteria'"},
+     {OPT=>"hypo!",   VAR=>\$hypo, DEFAULT=>0, DESC=>"Don't filter out hypothetical proteins"},
++    {OPT=>"covid19",   VAR=>\$covid19, DEFAULT=>0, DESC=>"COVID-19 changes"},
+   );
+ 
+   #(!@ARGV) && (usage());

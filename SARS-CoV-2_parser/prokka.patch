@@ -1,0 +1,103 @@
+--- prokka-1.14.5/bin/prokka	2019-11-11 01:49:19.000000000 -0600
++++ prokka.tmp	2021-01-22 12:43:32.000000000 -0600
+@@ -53,7 +53,7 @@
+ my $PROKKA_DOI = '10.1093/bioinformatics/btu153';
+ my $HYPO = 'hypothetical protein';
+ my $UNANN = 'unannotated protein';
+-my $MAXCONTIGIDLEN = 37;  # Genbank rule
++my $MAXCONTIGIDLEN = 1000;
+ my $SIGNALP_MAXSEQ = 10_000;  # maximum allowed input for signalp
+ my @LOG; # buffer up log lines before we have log file ready
+ 
+@@ -229,7 +229,7 @@
+ 
+ my(@Options, $quiet, $debug, $kingdom, $fast, $force, $outdir, $prefix, $cpus, $dbdir,
+              $addgenes, $addmrna, $cds_rna_olap,
+-             $gcode, $gram, $gffver, $locustag, $increment, $mincontiglen, $evalue, $coverage,
++             $gcode, $mintotalbp, $gram, $gffver, $locustag, $increment, $mincontiglen, $evalue, $coverage,
+              $genus, $species, $strain, $plasmid, $prodigaltf,
+              $usegenus, $proteins, $hmms, $centre, $scaffolds,
+              $rfam, $norrna, $notrna, $rnammer, $rawproduct, $noanno, $accver,
+@@ -711,18 +711,20 @@
+ 
+ msg("Predicting coding sequences");
+ my $totalbp = sum( map { $seq{$_}{DNA}->length } @seq);
+-my $prodigal_mode = ($totalbp >= 100000 && !$metagenome) ? 'single' : 'meta';
++my $prodigal_mode = ($totalbp >= $mintotalbp && !$metagenome) ? 'single' : 'meta';
+ msg("Contigs total $totalbp bp, so using $prodigal_mode mode");
+ my $num_cds=0;
+-my $cmd = "prodigal -i \Q$outdir/$prefix.fna\E -c -m -g $gcode -p $prodigal_mode -f sco -q";
++my $cmd = "prodigal_wrapper.sh $genus $locustag -i \Q$outdir/$prefix.fna\E -c -m -g $gcode -p $prodigal_mode -f sco -q";
+ if ($prodigaltf and -r $prodigaltf) {
+   msg("Gene finding will be aided by Prodigal training file: $prodigaltf");
+   $cmd .= " -t '$prodigaltf'";
+ }
+ msg("Running: $cmd");
+ open my $PRODIGAL, '-|', $cmd;
++my $fout = Bio::SeqIO->new(-file=>">>$outdir/$prefix.fna", -format=>'fasta');
+ my $sid;
+ while (<$PRODIGAL>) {
++	print $_;
+   if (m/seqhdr="([^\s\"]+)"/) {  
+     $sid = $1;
+ #    msg("CDS $sid");
+@@ -766,6 +768,32 @@
+       
+     }
+   }
++  elsif (m/^>\d+_(\d+)_(\d+)_([+-])_(\w+)$/) {
++    my $tool = "Prodigal:".$tools{prodigal}->{VERSION}; # FIXME: why inner loop?
++		my $md5 = Digest::MD5->new()->add($4);
++		my $new_id = "$sid|IBMFPG-" . $md5->hexdigest;
++		my $new_seq = Bio::Seq->new(-id => $new_id, -seq => $4, -alphabet => 'dna' );
++    my $cds = Bio::SeqFeature::Generic->new(
++      -primary    => 'CDS',
++      -seq_id     => $new_id,
++      -source     => $tool,
++      -start      => 1,
++      -end        => $new_seq->length, 
++      -strand     => ($3 eq '+' ? +1 : -1),
++      -score      => undef,
++      -frame      => 0,
++      -tag        => {
++        'inference' => "ab initio prediction:$tool",
++        'dna_found'  => $4
++      }
++    );
++    $num_cds++;
++		$seq{$new_id}{DNA} = $new_seq;
++    push @{$seq{$new_id}{FEATURE}}, $cds;
++		push @seq, $new_id;
++		$fout->write_seq($new_seq);
++		$ncontig++;
++  }
+ }
+ msg("Found $num_cds CDS");
+ 
+@@ -773,11 +801,16 @@
+ # Connect features to their parent sequences
+ 
+ msg("Connecting features back to sequences");
++
++my $new_totalbp = 0;
+ for my $sid (@seq) {
+   for my $f (@{ $seq{$sid}{FEATURE} }) {
+-    $f->attach_seq( $seq{$sid}{DNA} );
+-  }
++		$f->attach_seq( $seq{$sid}{DNA} );
++	}
++	$new_totalbp += $seq{$sid}{DNA}->length;
+ }
++msg("old_totalbp=" . $totalbp . ", new_totalbp=" . $new_totalbp);
++$totalbp = $new_totalbp;
+ 
+ # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+ # Find signal peptide leader sequences
+@@ -1761,6 +1794,7 @@
+     'Annotations:',
+     {OPT=>"kingdom=s",  VAR=>\$kingdom, DEFAULT=>'Bacteria', DESC=>"Annotation mode: ".join('|', kingdoms()) },
+     {OPT=>"gcode=i",  VAR=>\$gcode, DEFAULT=>0, DESC=>"Genetic code / Translation table (set if --kingdom is set)"},
++    {OPT=>"mintotalbp=i",  VAR=>\$mintotalbp, DEFAULT=>100, DESC=>"Minimum base pair count to place prodigal in single mode"},
+     {OPT=>"prodigaltf=s",  VAR=>\$prodigaltf, DEFAULT=>'', DESC=>"Prodigal training file" },
+     {OPT=>"gram=s",  VAR=>\$gram, DEFAULT=>'', DESC=>"Gram: -/neg +/pos"},
+     {OPT=>"usegenus!",  VAR=>\$usegenus, DEFAULT=>0, DESC=>"Use genus-specific BLAST databases (needs --genus)"},

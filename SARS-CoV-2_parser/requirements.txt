@@ -1,0 +1,3 @@
+biopython
+docker~=4.4.1
+pandas~=1.2.0
