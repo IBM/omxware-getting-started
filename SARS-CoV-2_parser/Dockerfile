@@ -1,7 +1,5 @@
 FROM ubuntu:bionic
 
-LABEL maintainer="Ed Seabolt eseabolt@us.ibm.com"
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
@@ -81,8 +79,13 @@ COPY covid19_prodigal_parser.py covid19_ref_proteins.fasta pp1ab_full_translate.
 
 # tbl2asn has an internal date check which will cause the program to fail if the date has passed. Therefore, instead
 # of relying on the version provided by Prokka, we include it here so we can maintain it.
-COPY tbl2asn ./prokka-${PROKKA_VERSION}/binaries/linux
+COPY linux64.tbl2asn.gz ./
 
-COPY prokka.sh prodigal_wrapper.sh ./
+RUN \
+	gunzip linux64.tbl2asn.gz && \
+	chmod 755 linux64.tbl2asn && \
+	mv linux64.tbl2asn ./prokka-${PROKKA_VERSION}/binaries/linux/tbl2asn
 
-ENTRYPOINT ["prokka.sh"]
+COPY prodigal_wrapper.sh ./
+
+ENTRYPOINT ["prokka"]
