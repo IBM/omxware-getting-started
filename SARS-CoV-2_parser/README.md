@@ -1,8 +1,14 @@
-###Description:###  
+### Description:  
 A Docker container with the contents necessary to identify the comprehensive set of the molecular targets in SARS-CoV-2 genomes with high set membership and sequence identity accuracy
 
-Note: please see `docker-build.sh` for external programs that must be installed prior to building the image.  
+### Usage:  
+1. Download required bioinfomatics tools at the links provided `docker-build.sh`  
+2. Execute `docker-build.sh` to build the image  
+3. Run `docker-run.sh` on your SARS-CoV-2 genome of interest. As an example in this repository, we've included retrieval and application of this method to the the SARS-CoV-2 reference sequence NC_045512.2
 
+If you have any questions, please feel free to create a GitHub issue.
+
+### Citation:  
 This repository provides the code to accompany the method described in ["Semi-supervised identification of SARS-CoV-2 molecular targets"](https://www.biorxiv.org/content/10.1101/2021.05.03.440524v1) if you use this code, please cite us with the following:  
 
 Semi-supervised identification of SARS-CoV-2 molecular targets  
