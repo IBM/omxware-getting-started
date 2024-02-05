@@ -7,7 +7,7 @@ Records the unique set of IPR codes for each protein as an ordered list construc
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [domain_architecture.csv](/Virulence-Analysis/methodology/outputs/domain_architecture.csv.gz)
+Exported file is located at [domain_architecture.csv.gz](/Virulence-Analysis/methodology/outputs/domain_architecture.csv.gz)
 
 ### Table Creation
 
