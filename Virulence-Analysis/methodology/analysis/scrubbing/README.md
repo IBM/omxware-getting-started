@@ -1,6 +1,6 @@
 # Data Scrubbing
 
-[back to parent](../README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Due to some inconsistencies in the exported data from FGP, the staged data was scrubbed to ensure table counts and references matched. This process was actually completed on the FGP data sometime ago, however, the date of this data (circa December 2019) precedes that. The tables must be scrubbed in the order given below.
 
