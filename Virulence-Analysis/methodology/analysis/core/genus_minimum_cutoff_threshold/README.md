@@ -1,12 +1,12 @@
 # Genus Minimum Cutoff Threshold
 
-Calculation of the minimum cutoff or selectivity threshold used to remove low frequency neighbors. The cutoff is determined via a Spark User Defined Function (UDF) called mct which utilizes the KneeLocator object from [here](https://github.com/arvkevi/kneed). Since most of the data is noisy, the curves are fitted with an exponential decay function. This model is passed to KneeLocator which determines the minimum (elbow). Plots are also created for reference. See [udfs.py](/udfs.py) for implementation. All available genera can be found in the [plots](/plots/mct) directory. Only neighbor type of PD is used for this analysis.
+Calculation of the minimum cutoff or selectivity threshold used to remove low frequency neighbors. The cutoff is determined via a Spark User Defined Function (UDF) called mct which utilizes the KneeLocator object from [here](https://github.com/arvkevi/kneed). Since most of the data is noisy, the curves are fitted with an exponential decay function. This model is passed to KneeLocator which determines the minimum (elbow). Plots are also created for reference. See [udfs.py](/Virulence-Analysis/methodology/udfs.py) for implementation. All available genera can be found in the [plots](/Virulence-Analysis/methodology/plots/mct) directory. Only neighbor type of PD is used for this analysis.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 ### Example analysis for Klebsiella
 
-![klebsiella.png](/plots/mct/k/klebsiella.png)
+![klebsiella.png](/Virulence-Analysis/methodology/plots/mct/k/klebsiella.png)
 
 Run the following to create the data:
 
