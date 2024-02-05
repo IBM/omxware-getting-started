@@ -4,7 +4,7 @@
 
 The following documents the steps required for generating virulence profiles and vectors.
 
-1. [Parse](/Virulence-Analysisk/methodology/vfdb/README.md) VFDB proteins and genes.
+1. [Parse](../vfdb/README.md) VFDB proteins and genes.
 2. [Stage](staging/README.md) data into Apache Spark.
 3. [Scrub](scrubbing/README.md) the staged data.
 4. [Create](core/domain_architecture/README.md) domain architecture table.
