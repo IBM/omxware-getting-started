@@ -2,7 +2,7 @@
 
 This table is an extension of GENOME_PIVOT_NEIGHBOR_PROTEIN with the addition of pivot and neighbor domain architectures. Note that some NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY in this table can be NULL. This is the case for proteins that are neighbors and have no defined domain architecture (IPR_PROTEIN) data.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
