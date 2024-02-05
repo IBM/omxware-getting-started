@@ -1,6 +1,6 @@
 # Data Staging
 
-[back to parent](../README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Data from FGP was exported from our original DB2 database for all tables below with the exception of GENE_VIRULENCE_STAGING and PROTEIN_VIRULENCE_STAGING which were created from the [vfdb](/Virulence-Analysis/methodology/vfdb/README.md) references.
 
