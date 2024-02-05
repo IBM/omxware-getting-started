@@ -2,7 +2,7 @@
 
 [back to parent](../README.md)
 
-Data from FGP was exported from our original DB2 database for all tables below with the exception of GENE_VIRULENCE_STAGING and PROTEIN_VIRULENCE_STAGING which were created from the [vfdb](/vfdb/README.md) references.
+Data from FGP was exported from our original DB2 database for all tables below with the exception of GENE_VIRULENCE_STAGING and PROTEIN_VIRULENCE_STAGING which were created from the [vfdb](/Virulence-Analysis/methodology/vfdb/README.md) references.
 
 * [GENE_VIRULENCE_STAGING](gene_virulence/README.md)
 * [GENOME_PROTEIN_STAGING](genome_protein/README.md)
