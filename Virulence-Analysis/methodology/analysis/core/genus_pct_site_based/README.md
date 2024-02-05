@@ -2,12 +2,12 @@
 
 The following generates a table reporting the percent pivot, co-pivot, and discoveries that are **site only** and with final domain architecture counts post-Kneedle analysis. 
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [genus_pct_site_based.csv](/outputs/genus_pct_site_based.csv)
+Exported file is located at [genus_pct_site_based.csv](/Virulence-Analysis/methodology/outputs/genus_pct_site_based.csv)
 
 ### Table Creation
 
