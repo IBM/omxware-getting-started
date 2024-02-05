@@ -16,11 +16,9 @@ time spark-submit \
   --conf spark.sql.parquet.mergeSchema=false \
   --conf spark.sql.parquet.filterPushdown=true \
   --conf spark.sql.hive.metastorePartitionPruning=true \
-  --conf spark.jars=${PWD}/lib/stocator-1.1.5-jar-with-dependencies.jar \
   --driver-memory 128G \
   --deploy-mode client \
   --files ${PWD}/hive-site.xml \
-  --files ${PWD}/core-site.xml \
   "$@"
 
 set +o noglob
