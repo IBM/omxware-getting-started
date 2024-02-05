@@ -2,12 +2,12 @@
 
 Records the unique set of IPR codes for each protein as an ordered list constructed from the original IPR_PROTEIN table from FGP. The DOMAIN_ARCHITECTURE table records these unique sets, the counts of the types, and represents the records with an MD5 hash of the set. The architectures are crossed referenced with their associated proteins via PROTEIN_DOMAIN_ARCHITECTURE.
 
-[back to parent](/analysis/README.md)
+[back to parent](/omxware-getting-started/Virulence-Analysis/methodology/analysis/README.md)
 
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [domain_architecture.csv](/outputs/domain_architecture.csv)
+Exported file is located at [domain_architecture.csv](/omxware-getting-started/Virulence-Analysis/methodology/outputs/domain_architecture.csv)
 
 ### Table Creation
 
