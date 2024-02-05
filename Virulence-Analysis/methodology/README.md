@@ -29,3 +29,9 @@ The following environment was used for Spark processes
 * PySpark documentation - https://spark.apache.org/docs/3.3.1/api/python/index.html
 
 Source the file `spark-env.sh` to setup Python and Spark environments
+
+to install packages run the following
+
+```
+pip install -r requirements.txt
+```
