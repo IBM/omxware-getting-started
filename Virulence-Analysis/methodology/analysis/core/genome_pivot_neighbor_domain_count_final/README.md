@@ -2,7 +2,7 @@
 
 This table represents final counts at the genome level. Taking the sum of the counts in this table will produce the counts observed at the genus level.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
