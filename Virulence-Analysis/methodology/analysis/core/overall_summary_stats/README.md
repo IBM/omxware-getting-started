@@ -647,7 +647,7 @@ user	1m13.298s
 sys	0m10.220s
 ```
 
-[genus_standout_discoveries.csv](/Virulence-Analysis/methodology//outputs/genus_standout_discoveries.csv)
+[genus_standout_discoveries.csv](/Virulence-Analysis/methodology//outputs/genus_standout_discoveries.csv.gz)
 
 ### Export Genus Standout Discoveries Protein
 
@@ -810,7 +810,7 @@ user	1m11.177s
 sys	0m9.414s
 ```
 
-[pivot_copivot_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_copivot_frequency.csv)
+[pivot_copivot_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_copivot_frequency.csv.gz)
 
 ### Pivot Discovery Frequency
 
@@ -925,7 +925,7 @@ user	1m9.344s
 sys	0m9.867s
 ```
 
-[pivot_discovery_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_discovery_frequency.csv)
+[pivot_discovery_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_discovery_frequency.csv.gz)
 
 ### Genome Basic Stats
 
@@ -1039,4 +1039,4 @@ user	1m8.997s
 sys	0m9.527s
 ```
 
-[genome_basic_stats.csv](/Virulence-Analysis/methodology//outputs/genome_basic_stats.csv)
+[genome_basic_stats.csv](/Virulence-Analysis/methodology//outputs/genome_basic_stats.csv.gz)
