@@ -1,8 +1,8 @@
 # Genome Pivot Neighbor Protein
 
-This table is an extension of GENOME_PIVOT_PROTEIN and records the genome accession, pivot, locus, and associated neighbors. Pivots are labeled with P and match proteins in VFDB based on exact domain architecture. Co-pivots are labeled with C and match proteins in VFDB based on exact domain architecture, however, these proteins are found as neighbors to the current pivot protein. Putative discoveries are labeled with PD and do not match any protein in VFDB. These proteins are labeled putative because they are not found to be discoveries until a selectivity threshold has been based in a sub-sequent step. These proteins might play critical roles via co-occurrence with pivots and co-pivots in the exhibited virulence. They could also be crucial in the study of pathogenicity islands too.
+This table is an extension of GENOME_PIVOT_PROTEIN and records the genome accession, pivot, locus, and associated neighbors. Pivots are labeled with P and match proteins in VFDB based on exact domain architecture. Co-pivots are labeled with C and match proteins in VFDB based on exact domain architecture, however, these proteins are found as neighbors to the current pivot protein. Putative discoveries are labeled with PD and do not match any protein in VFDB. These proteins are labeled putative because they are not found to be discoveries until a selectivity threshold has been applied in a sub-sequent step. These proteins might play critical roles via co-occurrence with pivots and co-pivots in the exhibited virulence. They could also be crucial in the study of pathogenicity islands too.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
