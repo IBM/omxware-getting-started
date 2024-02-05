@@ -2,7 +2,7 @@
 
 This table records neighbor occurrence counts by genome accession number and pivot domain architecture.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
