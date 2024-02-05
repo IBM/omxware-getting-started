@@ -2,7 +2,7 @@
 
 This table contains the final counts after filtering by the minimum cutoff threshold calculated in previous steps. At this stage, any neighboring domain architecture that is a putative discovery (PD) and is greater than or equal to the threshold for its genus will be considered a discovery and marked with D. Items that are either P or C are retained regardless of threshold. Note that this table will not contain any neighbor architecture that are null.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
