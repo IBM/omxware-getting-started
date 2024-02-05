@@ -2,7 +2,7 @@
 
 This table represents the rollup of neighbor domain architecture counts to be used for determination of minimum cutoff threshold by genus.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
