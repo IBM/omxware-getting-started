@@ -14,7 +14,7 @@ This repository holds code and other assets for working with virulent proteins i
  
 ## Environment
 
-We used a 56 core virtual machine using Intel(R) Xeon(R) Platinum 8260 CPU @ 2.40GHz, ~250GB RAM, and 2TB SAN drive for storage
+We used a 56 core virtual machine leveraging Intel(R) Xeon(R) Platinum 8260 CPU @ 2.40GHz, ~250GB RAM, and 2TB SAN drive for storage
 
 ## Python
 
