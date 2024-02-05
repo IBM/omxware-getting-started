@@ -7,7 +7,7 @@ The following generates a table reporting the percent pivot, co-pivot, and disco
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [genus_pct_site_based.csv](/Virulence-Analysis/methodology/outputs/genus_pct_site_based.csv)
+Exported file is located at [genus_pct_site_based.csv.gz](/Virulence-Analysis/methodology/outputs/genus_pct_site_based.csv.gz)
 
 ### Table Creation
 
