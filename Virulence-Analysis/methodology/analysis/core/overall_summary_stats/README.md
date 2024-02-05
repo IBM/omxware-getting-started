@@ -297,7 +297,7 @@ user	0m56.825s
 sys	0m7.892s
 ```
 
-[standout_discoveries.csv](/Virulence-Analysis/methodology/outputs/standout_discoveries.csv)
+[standout_discoveries.csv](/Virulence-Analysis/methodology/outputs/standout_discoveries.csv.gz)
 
 ### Export Standout Discoveries Protein
 
@@ -321,7 +321,7 @@ user	1m4.161s
 sys	0m9.456s
 ```
 
-[standout_discoveries_protein.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_protein.csv)
+[standout_discoveries_protein.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_protein.csv.gz)
 
 ### Export Standout Discoveries IPR
 
@@ -345,7 +345,7 @@ user	0m47.773s
 sys	0m6.583s
 ```
 
-[standout_discoveries_ipr.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_ipr.csv)
+[standout_discoveries_ipr.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_ipr.csv.gz)
 
 ### Genus Standout Discoveries
 
