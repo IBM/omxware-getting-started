@@ -297,7 +297,7 @@ user	0m56.825s
 sys	0m7.892s
 ```
 
-[standout_discoveries.csv](/Virulence-Analysis/methodology/outputs/standout_discoveries.csv.gz)
+[standout_discoveries.csv.gz](/Virulence-Analysis/methodology/outputs/standout_discoveries.csv.gz)
 
 ### Export Standout Discoveries Protein
 
@@ -321,7 +321,7 @@ user	1m4.161s
 sys	0m9.456s
 ```
 
-[standout_discoveries_protein.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_protein.csv.gz)
+[standout_discoveries_protein.csv.gz](/Virulence-Analysis/methodology//outputs/standout_discoveries_protein.csv.gz)
 
 ### Export Standout Discoveries IPR
 
@@ -345,7 +345,7 @@ user	0m47.773s
 sys	0m6.583s
 ```
 
-[standout_discoveries_ipr.csv](/Virulence-Analysis/methodology//outputs/standout_discoveries_ipr.csv.gz)
+[standout_discoveries_ipr.csv.gz](/Virulence-Analysis/methodology//outputs/standout_discoveries_ipr.csv.gz)
 
 ### Genus Standout Discoveries
 
@@ -647,7 +647,7 @@ user	1m13.298s
 sys	0m10.220s
 ```
 
-[genus_standout_discoveries.csv](/Virulence-Analysis/methodology//outputs/genus_standout_discoveries.csv.gz)
+[genus_standout_discoveries.csv.gz](/Virulence-Analysis/methodology//outputs/genus_standout_discoveries.csv.gz)
 
 ### Export Genus Standout Discoveries Protein
 
@@ -810,7 +810,7 @@ user	1m11.177s
 sys	0m9.414s
 ```
 
-[pivot_copivot_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_copivot_frequency.csv.gz)
+[pivot_copivot_frequency.csv.gz](/Virulence-Analysis/methodology//outputs/pivot_copivot_frequency.csv.gz)
 
 ### Pivot Discovery Frequency
 
@@ -925,7 +925,7 @@ user	1m9.344s
 sys	0m9.867s
 ```
 
-[pivot_discovery_frequency.csv](/Virulence-Analysis/methodology//outputs/pivot_discovery_frequency.csv.gz)
+[pivot_discovery_frequency.csv.gz](/Virulence-Analysis/methodology//outputs/pivot_discovery_frequency.csv.gz)
 
 ### Genome Basic Stats
 
@@ -1039,4 +1039,4 @@ user	1m8.997s
 sys	0m9.527s
 ```
 
-[genome_basic_stats.csv](/Virulence-Analysis/methodology//outputs/genome_basic_stats.csv.gz)
+[genome_basic_stats.csv.gz](/Virulence-Analysis/methodology//outputs/genome_basic_stats.csv.gz)
