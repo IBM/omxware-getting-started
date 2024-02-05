@@ -1,5 +1,7 @@
 # Virulence Summary Statistics
 
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
+
 * [Standout Discoveries](#standout-discoveries)
 * [Export Standout Discoveries](#export-standout-discoveries)
 * [Export Standout Discoveries Protein](#export-standout-discoveries-protein)
