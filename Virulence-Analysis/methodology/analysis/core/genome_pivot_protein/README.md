@@ -2,7 +2,7 @@
 
 This table is an extension of the PIVOT_PROTEIN and records the genome accession and locus of the pivot. Note that the number of distinct genomes recorded here is a little less than in the original GENOME_TABLE and GENOME_PROTEIN tables. This is due to not all proteins in all genomes have a match in VFDB to be considered a pivot. Thus, those genomes will not be recorded here and fall out of the analysis.
 
-[back to parent](/analysis/README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
