@@ -1,6 +1,6 @@
 # VFDB
 
-[back to parent](../README.md)
+[back to parent](/Virulence-Analysis/methodology/README.md)
 
 The Virulence Factor Database (VFDB) is a resource consisting of known and predicted virulence factors for a number of bacterial genera.
 
