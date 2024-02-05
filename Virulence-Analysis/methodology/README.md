@@ -11,6 +11,10 @@ This repository holds code and other assets for working with virulent proteins i
     * Total number of proteins in VFDB: **28,583**
     * Total number of VFDB proteins in FGP: **22,853**
     * Total number of VFDB proteins in FGP with IPR: **21,125**
+ 
+## Environment
+
+We used a 56 core virtual machine using Intel(R) Xeon(R) Platinum 8260 CPU @ 2.40GHz, ~250GB RAM, and 2TB SAN drive for storage
 
 ## Python
 
