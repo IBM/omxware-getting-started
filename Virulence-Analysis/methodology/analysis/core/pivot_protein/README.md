@@ -2,7 +2,7 @@
 
 This table contains proteins from FGP that match by exact domain architecture to proteins in VFDB. These proteins have some aspect of virulence related to them as they share IPR codes in common with known virulent proteins. They are named pivots because they formulate the basis for querying neighbors near them.
 
-[back to parent](../../README.md)
+[back to parent](/Virulence-Analysis/methodology/analysis/README.md)
 
 Run the following to create the data:
 
