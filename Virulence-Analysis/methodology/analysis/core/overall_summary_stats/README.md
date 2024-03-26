@@ -16,6 +16,7 @@
 * [Export Protein Discovery Frequency](#export-pivot-discovery-frequency)
 * [Genome Basic Stats](#genome-basic-stats)
 * [Export Genome Basic Stats](#export-genome-basic-stats)
+* [After Needle Analysis](#after-needle-analysis)
 
 - Q1 Which virulence discoveries standout by count (top 25 across all organisms)? What are the protein names associated
   with these?
@@ -1042,3 +1043,110 @@ sys	0m9.527s
 ```
 
 [genome_basic_stats.csv.gz](/Virulence-Analysis/methodology//outputs/genome_basic_stats.csv.gz)
+
+### After Needle Analysis
+
+[back to top](#virulence-summary-statistics)
+
+```
+After Needle Analysis:
+Number of Distinct Pivot DAS: 2599
+Number of Distinct Neighbor DAS: 82659
+Number of Distinct Pivot DAS NEIGHBOR_TYPE = 'D': 2308
+Number of Distinct Neighbor DAS NEIGHBOR_TYPE = 'D': 80060
+Number of Distinct Pivot Proteins: 11144804
+Number of Distinct Neighbor Proteins: 27423496
+Number of Distinct Pivot Proteins NEIGHBOR_TYPE = 'D': 11127574
+Number of Distinct Neighbor Proteins NEIGHBOR_TYPE = 'D': 16278692
+```
+
+```sql
+-- 2599
+SELECT
+    COUNT(DISTINCT PIVOT_DOMAIN_ARCHITECTURE_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+
+-- 82659
+SELECT
+    COUNT(DISTINCT NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+        
+-- 11144804
+SELECT
+    COUNT(DISTINCT PIVOT_PROTEIN_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_PROTEIN_DOMAIN
+        WHERE
+            PIVOT_DOMAIN_ARCHITECTURE_UID_KEY IN 
+                (SELECT
+                    PIVOT_DOMAIN_ARCHITECTURE_UID_KEY
+                    FROM
+                        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+                        GROUP BY
+                            PIVOT_DOMAIN_ARCHITECTURE_UID_KEY)
+                            
+-- 27423496
+SELECT
+    COUNT(DISTINCT NEIGHBOR_PROTEIN_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_PROTEIN_DOMAIN
+        WHERE
+            NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY IN 
+                (SELECT
+                    NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY
+                    FROM
+                        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+                        GROUP BY
+                            NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+                            
+-- 11127574
+SELECT
+    COUNT(DISTINCT PIVOT_PROTEIN_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_PROTEIN_DOMAIN
+        WHERE
+            PIVOT_DOMAIN_ARCHITECTURE_UID_KEY IN 
+                (SELECT
+                    PIVOT_DOMAIN_ARCHITECTURE_UID_KEY
+                    FROM
+                        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+                        WHERE
+                            NEIGHBOR_TYPE = 'D'
+                        GROUP BY
+                            PIVOT_DOMAIN_ARCHITECTURE_UID_KEY)
+                            
+-- 16278692
+SELECT
+    COUNT(DISTINCT NEIGHBOR_PROTEIN_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_PROTEIN_DOMAIN
+        WHERE
+            NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY IN 
+                (SELECT
+                    NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY
+                    FROM
+                        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+                        WHERE
+                            NEIGHBOR_TYPE = 'D'
+                        GROUP BY
+                            NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+                            
+-- 2308
+SELECT
+    COUNT(DISTINCT PIVOT_DOMAIN_ARCHITECTURE_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+        WHERE
+            NEIGHBOR_TYPE = 'D'
+            
+-- 80060
+SELECT
+    COUNT(DISTINCT NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+    FROM
+        GENOME_PIVOT_NEIGHBOR_DOMAIN_COUNT_FINAL
+        WHERE
+            NEIGHBOR_TYPE = 'D'
+```
+
