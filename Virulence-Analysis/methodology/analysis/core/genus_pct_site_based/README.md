@@ -682,7 +682,11 @@ sys	4m41.950s
 To export the final data table run the following:
 
 ```
-./spark-submit.sh export.py --stmt "SELECT * FROM GENUS_PCT_SITE_BASED ORDER BY 1" --path outputs/genus_pct_site_based.csv
+./spark-submit.sh export.py --stmt "
+SELECT *
+  FROM
+    GENUS_PCT_SITE_BASED
+    ORDER BY 1" --path outputs/virulence_prediction_genus_pct_site_based.csv
 ```
 
 OUTPUT
