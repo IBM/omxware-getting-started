@@ -300,7 +300,7 @@ user	0m56.825s
 sys	0m7.892s
 ```
 
-[virulence_prediction_standout_discoveries.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z7480ZqJfKYZK0ZB3qXxz-2)
+[virulence_prediction_standout_discoveries.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z7480ZqJfKYZK0ZB3qXxz-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Export Standout Discoveries Protein
 
@@ -324,7 +324,7 @@ user	1m4.161s
 sys	0m9.456s
 ```
 
-[virulence_prediction_standout_discoveries_protein.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z7F00ZqJQb7KFB99Vqxk4-2)
+[virulence_prediction_standout_discoveries_protein.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z7F00ZqJQb7KFB99Vqxk4-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Export Standout Discoveries IPR
 
@@ -348,7 +348,7 @@ user	0m47.773s
 sys	0m6.583s
 ```
 
-[virulence_prediction_standout_discoveries_ipr.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z76Q0ZqJv3Jj6Kq8x3kFp-2)
+[virulence_prediction_standout_discoveries_ipr.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z76Q0ZqJv3Jj6Kq8x3kFp-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Genus Standout Discoveries
 
@@ -650,7 +650,7 @@ user	1m13.298s
 sys	0m10.220s
 ```
 
-[virulence_prediction_genus_standout_discoveries.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6KQ0ZqJgZ14yv9xByKxF-2)
+[virulence_prediction_genus_standout_discoveries.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6KQ0ZqJgZ14yv9xByKxF-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Export Genus Standout Discoveries Protein
 
@@ -674,7 +674,7 @@ user	1m35.247s
 sys	0m14.983s
 ```
 
-[virulence_prediction_genus_standout_discoveries_protein.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6Z80ZqJbvKV4BzbxQBgf-2)
+[virulence_prediction_genus_standout_discoveries_protein.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6Z80ZqJbvKV4BzbxQBgf-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Export Genus Standout Discoveries IPR
 
@@ -698,7 +698,7 @@ user	1m27.120s
 sys	0m11.226s
 ```
 
-[virulence_prediction_genus_standout_discoveries_ipr.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6Vj0ZqJpQ770FG6BjvVX-2)
+[virulence_prediction_genus_standout_discoveries_ipr.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6Vj0ZqJpQ770FG6BjvVX-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Pivot CoPivot Frequency
 
@@ -813,7 +813,7 @@ user	1m11.177s
 sys	0m9.414s
 ```
 
-[virulence_prediction_pivot_copivot_frequency.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6pQ0ZqJq9XvB7vV2q4kf-2)
+[virulence_prediction_pivot_copivot_frequency.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6pQ0ZqJq9XvB7vV2q4kf-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Pivot Discovery Frequency
 
@@ -928,7 +928,7 @@ user	1m9.344s
 sys	0m9.867s
 ```
 
-[virulence_prediction_pivot_discovery_frequency.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6x80ZqJQ9bkpYz11zv8J-2)
+[virulence_prediction_pivot_discovery_frequency.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z6x80ZqJQ9bkpYz11zv8J-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Genome Basic Stats
 
@@ -1042,7 +1042,7 @@ user	1m8.997s
 sys	0m9.527s
 ```
 
-[virulence_prediction_genome_basic_stats.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z67Q0ZqJpQ770FG6BjvQf-2)
+[virulence_prediction_genome_basic_stats.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z67Q0ZqJpQ770FG6BjvQf-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### After Needle Analysis
 
