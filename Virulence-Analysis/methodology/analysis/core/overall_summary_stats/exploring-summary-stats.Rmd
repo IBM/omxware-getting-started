@@ -1,0 +1,536 @@
+---
+title: "exploring-summary-stats"
+author: "K.L. Beck"
+date: "2022-10-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(arrow) # read parquet
+library(cluster)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+
+options(scipen = 10)
+```
+
+```{r joinGOec}
+
+ec_go = read_parquet("~/Work/OMXWare-Local/Virulence/part-00000-24dd3420-9bdc-4922-9e7d-e643183da818-c000.snappy.parquet")
+
+ipr_go = read_parquet("~/Work/OMXWare-Local/Virulence/part-00000-094914b3-df54-45e0-a968-ccdc7d34c2b3-c000.snappy.parquet")
+
+go_table = read_parquet("~/Work/OMXWare-Local/Virulence/part-00000-d0b15c47-52ef-49b9-8dd8-83f7e432f458-c000.snappy.parquet")
+
+domain_architectures_ipr_typed = read.csv("~/Work/Code/OMXW/virulence/outputs/domain_architecture.csv", stringsAsFactors = FALSE)
+
+da2_ipr_long = domain_architectures_ipr_typed %>% dplyr::select(DOMAIN_ARCHITECTURE_UID_KEY, DOMAIN_ARCHITECTURE) %>% tidyr::separate_rows(DOMAIN_ARCHITECTURE, sep = "~", convert = FALSE)
+colnames(da2_ipr_long)[2] = "IPR_ACCESSION"
+
+da2_ipr = domain_architectures_ipr_typed %>% dplyr::select(DOMAIN_ARCHITECTURE_UID_KEY, DOMAIN_ARCHITECTURE)
+
+```
+
+
+## Questions of Note
+
+### Q1 Which virulence discoveries standout by count (top 25 across all organisms)? What are the protein names associated with these?
+
+```{r standoutDiscoveriesProtNames}
+standout_da_counts = read.csv("~/Work/Code/OMXW/virulence/outputs/standout_discoveries.csv", stringsAsFactors = FALSE)
+standout_da_prot_names = read.csv("~/Work/Code/OMXW/virulence/outputs/standout_discoveries_protein.csv", stringsAsFactors = FALSE)
+
+summary(standout_da_counts$COUNT)
+
+ggplot(standout_da_counts, aes(COUNT)) +
+  geom_histogram(bins = 100) +
+  xlab("Domain Architecture Number of Observations")
+
+ggplot(standout_da_counts, aes(x="Discovery", y=COUNT)) +
+  geom_violin(width = 1.5) +
+  geom_boxplot(width = 0.1, color="grey", alpha=0.2) +
+  scale_y_log10() +
+  ylab("Domain Architecture Number of Observations")
+# TODO compare this with copivots?
+
+top_discoveries =  standout_da_counts %>% dplyr::slice_max(COUNT, n= 20)
+
+standouts = merge(standout_da_prot_names, standout_da_counts)
+
+
+# Q1
+top_discoveries_named = standouts[which(standouts$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY %in% top_discoveries$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY), ]
+
+# how many protein names are there per top DAs?
+table(top_discoveries_named$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+mean(table(top_discoveries_named$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+range(table(top_discoveries_named$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+
+# TODO are there names that are predominant for a DA (to help resolve synonyms)? ask Ed
+# add count per protein to each row in this table standout_discoveries_protein.csv
+
+
+# frequency of protein names for top das
+prot_name_counts_to_discovered_da = data.frame(table(top_discoveries_named$PROTEIN_FULLNAME))
+
+# these are the enriched protein names that are in high occurring discovered DAs
+# and this protein name occurs in more than 1 top discovery
+enriched_protein_names  = prot_name_counts_to_discovered_da[which(prot_name_counts_to_discovered_da$Freq > 1 & !(prot_name_counts_to_discovered_da$Var1 %in% c("hypothetical protein", "putative protein"))), ]
+
+enriched_protein_names_expanded = merge(top_discoveries_named, enriched_protein_names, by.y = "Var1", by.x = "PROTEIN_FULLNAME")
+
+# good intermediate plot, but really should show cumulative counts
+ggplot(enriched_protein_names_expanded, aes(x=Freq, y=COUNT, label=PROTEIN_FULLNAME, color = PROTEIN_FULLNAME)) +
+  geom_point() +
+  geom_text(hjust = 0, vjust=0) +
+  xlab("Present in N Discovered Domain Architectures") +
+  ylab("Observations as Discovered Domain Architecture")
+
+# Q1 - manuscript version
+ggplot(enriched_protein_names_expanded, aes(x=COUNT, y=PROTEIN_FULLNAME, fill = NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)) +
+  geom_bar(position = "stack", stat="identity") +
+  scale_fill_brewer(palette = "Paired") +
+  xlab("DOMAIN ARCHITECTURE OBSERVATIONS") +
+  ggtitle("Enriched protein names for top discovered domain architectures")
+
+
+# merge top discoveries with GO and with EC
+top_discoveries_func = merge(merge(merge(merge(top_discoveries, da2_ipr_long, by.x = "NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY", by.y = "DOMAIN_ARCHITECTURE_UID_KEY"), ipr_go, all.x = TRUE), ec_go, all.x = TRUE), go_table, all.x = TRUE) 
+top_discoveries_func$GO_LABEL = paste(top_discoveries_func$GO_TERM, top_discoveries_func$DESCRIPTION, sep="|")
+
+# drop missing GO terms for viz
+top_discoveries_func_GO_complete = top_discoveries_func[!is.na(top_discoveries_func$GO_TERM), ]
+
+# Q1 expanded with GO - manuscript version
+ggplot(top_discoveries_func_GO_complete, aes(x=COUNT, y=GO_LABEL, fill = NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)) +
+  geom_bar(position = "stack", stat="identity") +
+  xlab("DOMAIN ARCHITECTURE OBSERVATIONS") +
+  ggtitle("GO Terms for top discovered domain architectures")
+
+# three DAs don't have GO terms - true in latest release
+# only 2 have ec codes
+
+# try look up here to extract more ec codes, if time
+# https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/interpro.xml.gz
+
+
+```
+
+
+### Q1a For the high occurring discoveries, do they occur with a diversity of virulence factors (pivots)?
+    - Q1b For the newly discovered proteins occurring with low diversity pivots (consistently occurring D-P pairs), is
+      there a diversity of function (IPR codes) indicating functional dependence?
+        - Q1b1 For the neighbors, can you identify that the neighbors are regulatory in nature (and expected)? Or
+          related to excretion?
+
+```{r topDiscoveryPivots}
+
+pivot_discovery = read.csv("~/Work/Code/OMXW/virulence/outputs/pivot_discovery_frequency.csv", stringsAsFactors = FALSE)
+
+pivot_div_discovery = pivot_discovery[which(pivot_discovery$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY %in% unique(top_discoveries$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)), ]
+
+
+# Q1a
+# this is the number of distinct pivot pairings for each top discovered da
+table(pivot_div_discovery$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)
+mean(table(pivot_div_discovery$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+range(table(pivot_div_discovery$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+# note, this doesn't factor in which of the pairings are most common since COUNT isn't considered here
+
+# total number of pivots neighboring standout discovered DAs
+length(unique(pivot_div_discovery$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY))
+length(unique(pivot_div_discovery$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)) # standout discovered DAs, sanity check
+
+# pivot frequency for top standout discoveries
+pivots_for_standout_discoveries = data.frame(table(pivot_div_discovery$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY))
+# there are pivots that occur with all top 20 das
+# what are those?
+
+ggplot(pivots_for_standout_discoveries, aes(Freq)) +
+  geom_histogram(binwidth = 1, col="white") +
+  stat_bin(binwidth=1, geom="text", aes(label=..count..), vjust=-1) +
+  xlab("Pivot DAs occurrence with standout discovered DAs (max 20)") +
+  ggtitle("Histogram of pivot occurrence for standout discovered DAs")
+
+pivot_uids_common_in_standout_discoveries = pivots_for_standout_discoveries$Var1[which(pivots_for_standout_discoveries$Freq > 15)]
+write.csv(pivot_uids_common_in_standout_discoveries, "~/Work/Code/OMXW/virulence/outputs/pivot_uids_for_standout_discoveries.csv", quote = FALSE, row.names = FALSE)
+
+# what are the pivot protein names associated with those standout discoveries?
+# TODO next
+pivot_prot_names = read.csv("~/Work/Code/OMXW/virulence/outputs/standout_pivot_proteins (1).csv", stringsAsFactors = FALSE)
+range(table(pivot_prot_names$DOMAIN_ARCHITECTURE_UID_KEY)) # how many protein names per uid?
+mean(table(pivot_prot_names$DOMAIN_ARCHITECTURE_UID_KEY))
+
+
+pivot_prot_names_top = pivot_prot_names %>% group_by(DOMAIN_ARCHITECTURE_UID_KEY) %>% dplyr::slice_max(COUNT, n=1)
+pivot_prot_names_top_no_hypo = pivot_prot_names_top[which(pivot_prot_names_top$PROTEIN_FULLNAME != "hypothetical protein"), ]
+# pulled top 20 protein names by occurrence to include in slides
+
+
+test = data.frame(animal = c("cat", "dog", "fish", "dog"),
+                  trait = c("furry", "noisy", "wet","furry"),
+                  presence = c(3,1,1,4))
+
+test = data.frame(animal = c("cat", "dog", "fish", "dog"),
+                  trait = c("furry", "noisy", "wet","furry"),
+                  presence = 1)
+
+
+
+ggplot(test, aes(animal, trait, fill = presence)) +
+  geom_tile() 
+
+tmp = spread(test, animal, presence, fill = 0)
+row.names(tmp) = tmp$trait
+tmp$trait = NULL
+heatmap(as.matrix(tmp), scale = "none")
+
+ggplot(test, aes(animal, trait, group = 1:nrow(test))) +
+  geom_point()
+
+ggplot(pivot_div_discovery, aes(PIVOT_DOMAIN_ARCHITECTURE_UID_KEY, NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY)) +
+  geom_point()
+
+# pivot-discovery (all pairings) with frequency
+pivot_div_discovery_mat = spread(pivot_div_discovery, NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY, COUNT, fill = 0)
+row.names(pivot_div_discovery_mat) = pivot_div_discovery_mat$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY
+pivot_div_discovery_mat$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY = NULL
+heatmap(as.matrix(pivot_div_discovery_mat), scale = "none") # no color normalization
+heatmap(as.matrix(pivot_div_discovery_mat))
+
+# TODO cleanup heatmap with color frequency ^
+
+# Q1a
+heatmap(as.matrix(pivot_div_discovery_binary_mat), 
+        scale = "none",
+        margins = c(10,10),
+        xlab = "Standout discovered DAs",
+        cexCol = 0.5,
+        ylab = "Pivot DAs",
+        main = "Observation of Pivot DAs with Standout Discovered DAs") # no color normalization
+
+
+
+# just pivot protein presence/absence with standout discoveries
+pivot_div_discovery_binary = pivot_div_discovery
+pivot_div_discovery_binary$COUNT = 1
+pivot_div_discovery_binary_mat = spread(pivot_div_discovery_binary, NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY, COUNT, fill = 0)
+row.names(pivot_div_discovery_binary_mat) = pivot_div_discovery_binary_mat$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY
+pivot_div_discovery_binary_mat$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY = NULL
+
+# Q1a
+heatmap(as.matrix(pivot_div_discovery_binary_mat), 
+        scale = "none",
+        margins = c(10,10),
+        xlab = "Standout discovered DAs",
+        cexCol = 0.5,
+        ylab = "Pivot DAs",
+        main = "Observation of Pivot DAs with Standout Discovered DAs") # no color normalization
+
+```
+
+### Q2 For all discovered domain architectures, what has the highest count for each genera (top 50)? Map those to GO terms
+  for enriched pathways. What are the protein names associated with these?
+    - Q2a Are there discovered DAs unique to genera?
+    - Q2b Are there discovered DAs that are present across multiple genera?
+    
+### Q3 Which IPR codes occur in the most discovered DAs?
+TODO
+
+### Q4 What are the most frequent pairs of pivot and co-pivots?
+```{r p_co_pairing}
+pivot_copivot_freq = read.csv("~/Work/Code/OMXW/virulence/outputs/pivot_copivot_frequency.csv", stringsAsFactors = FALSE)
+
+length(unique(pivot_copivot_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY))
+length(unique(pivot_copivot_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+summary(pivot_copivot_freq$COUNT)
+
+# remove self-comparisons
+pivot_copivot_freq_no_self = pivot_copivot_freq[-which(pivot_copivot_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY == pivot_copivot_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY), ]
+
+# what do we do with mirrors? the table gives a full matrix and we only want the half matrix so counts aren't inflated
+# e.g. A - B, 5
+#      B - A, 5
+# only count each pair either A - B or B - A once
+
+pivot_copivot_freq_no_self$ORDERED_DA_STR = ""
+pivot_copivot_freq_no_self$ORDERED_DA_STR = 
+  sapply(1:nrow(pivot_copivot_freq_no_self), function(n)
+    paste(sort(c(pivot_copivot_freq_no_self$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY[n], pivot_copivot_freq_no_self$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY[n])), collapse = "~")
+    )
+
+# verify that the per group count is the same regardless for A - B and B - A
+n_distinct_by_DA_pair = pivot_copivot_freq_no_self %>% group_by(ORDERED_DA_STR) %>% summarize(n_values = n_distinct(COUNT))
+all(n_distinct_by_DA_pair$n_values == 1) # each pivot co-pivot pair should have 1 count value
+
+# deduplicate to get half matrix
+pivot_copivot_freq_clean = pivot_copivot_freq_no_self[!duplicated(pivot_copivot_freq_no_self$ORDERED_DA_STR), ]
+
+# cleanup
+rm(pivot_copivot_freq_no_self)
+
+
+# is there a pivot-copivot pair that always appear together?
+
+# compute counts as relative value since pivot occurrence is a function of what's been sequenced
+# calculate percent co-pivot appearance with pivot
+# e.g. co-pivots that always appear with pivots would be 100%
+# pivots that occur with a diversity of co-pivots would have many co-pivots and those percentages would be lower
+
+pivot_freq_sum = pivot_copivot_freq_clean %>% group_by(PIVOT_DOMAIN_ARCHITECTURE_UID_KEY) %>% summarize(PIVOT_SUM = sum(COUNT))
+
+n_genomes = 206575
+pivot_copivot_relative = merge(pivot_copivot_freq_clean, pivot_freq_sum)
+pivot_copivot_relative$PERCENT_COPIVOT_OCCURRENCE = pivot_copivot_relative$COUNT / pivot_copivot_relative$PIVOT_SUM * 100
+pivot_copivot_relative$PIVOT_PERCENT_TOTAL_GENOMES = pivot_copivot_relative$PIVOT_SUM / n_genomes * 100
+
+summary(pivot_copivot_relative$PERCENT_COPIVOT_OCCURRENCE)
+summary(pivot_copivot_relative$PIVOT_PERCENT_TOTAL_GENOMES) # can be greater than 100% if domain architecture occurs multiple times in genomes
+
+length(which(pivot_copivot_relative$PERCENT_COPIVOT_OCCURRENCE > 99))
+
+# does the pure co-pivot percentage just inflate the low ones?
+ggplot(pivot_copivot_relative, aes(y=COUNT, x=PIVOT_SUM, color = PERCENT_COPIVOT_OCCURRENCE)) +
+  geom_point() +
+  scale_color_continuous() +
+  xlab("Total observations of pivot DA") +
+  xlim(c(0,2500000)) +
+  ylim(c(0,2500000)) +
+  ylab("Count of co-pivot observations per pivot")
+
+# sanity check: what are some of these very high pivot occurrences?
+da2_ipr_long[which(da2_ipr_long$DOMAIN_ARCHITECTURE_UID_KEY == "abf0fb6ee6c6d9aae6872e0e026a7e13"), ]
+# https://www.ebi.ac.uk/interpro/entry/InterPro/IPR003439/
+# ABC transporter-like, ATP-binding domain
+# highly conserved across bacteria, 50 different protein subfamilies
+# present in multiple places in genome
+# sanity checked
+
+# maybe consider this for supplement? all points
+ggplot(pivot_copivot_relative, aes(x=PERCENT_COPIVOT_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = PERCENT_COPIVOT_OCCURRENCE)) +
+  geom_point() +
+  scale_color_continuous() +
+  xlab("Co-pivot percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  geom_hline(yintercept = 100)
+
+pivot_copivot_relative_simple = pivot_copivot_relative %>% select(PERCENT_COPIVOT_OCCURRENCE, PIVOT_PERCENT_TOTAL_GENOMES)
+
+set.seed(527)
+clustered_pivot_copivot_relative = kmeans(pivot_copivot_relative_simple, centers = 15)
+
+# TODO what are the right numerical cutoffs for commonly present pivot co-pivot pairs? can k be determined without eyeballing data
+# work in progress - commenting out, hitting memory cap in R studio
+# consider moving to python
+# silhouette_score <- function(k){
+#   km <- kmeans(pivot_copivot_relative_simple, centers = k, nstart=25)
+#   ss <- silhouette(km$cluster, dist(pivot_copivot_relative_simple))
+#   mean(ss[, 3])
+# }
+# k <- 2:5
+# 
+# subsample_indices = sample(1:nrow(pivot_copivot_relative_simple), size = 50000)
+# 
+# km <- kmeans(pivot_copivot_relative_simple, centers = 3)
+# ss <- silhouette(km$cluster[subsample_indices], dist(pivot_copivot_relative_simple[subsample_indices,]))
+# mean(ss[, 3])
+# 
+# avg_sil <- sapply(k, silhouette_score)
+# plot(k, type='b', avg_sil, xlab='Number of clusters', ylab='Average Silhouette Scores', frame=FALSE)
+
+# cut to single copy proteins
+ggplot(pivot_copivot_relative, aes(x=PERCENT_COPIVOT_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = as.factor(clustered_pivot_copivot_relative$cluster))) +
+  geom_point() +
+  xlab("Co-pivot percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  ylim(c(0,100)) +
+  labs(colour = "k-means cluster")
+  # geom_hline(yintercept = 75, color = "red") +
+  # geom_vline(xintercept = 75, color = "red")
+
+# all pairings - maybe for supplement if we don't use plot above
+ggplot(pivot_copivot_relative, aes(x=PERCENT_COPIVOT_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = as.factor(clustered_pivot_copivot_relative$cluster))) +
+  geom_point() +
+  xlab("Co-pivot percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  labs(colour = "k-means cluster")
+
+# number of pivot co-pivot pairs
+length(which(pivot_copivot_relative$PIVOT_PERCENT_TOTAL_GENOMES > 50 & pivot_copivot_relative$PERCENT_COPIVOT_OCCURRENCE > 50))
+
+# TODO-next what are the pivot and co-pivot protein names that are co-occurring in the mid-green cluster? 
+# e.g. those high in genome corpus and high in co-occurring rate
+# these are bacteria-wide conserved virulence features
+pivot_copivot_relative_w_cluster = cbind(pivot_copivot_relative, "KMEANS_CLUSTER" = clustered_pivot_copivot_relative$cluster)
+pivot_copivot_relative_w_enriched_cluster = pivot_copivot_relative_w_cluster[which(pivot_copivot_relative_w_cluster$KMEANS_CLUSTER == 5), ]
+# this is the name table for protein looks up ^
+
+conserved_pairings = pivot_copivot_relative_w_cluster
+
+
+# next calculate n_distinct per pivot to get diversity
+
+
+
+```
+### Q5 What are the most frequent pairs of pivot and discoveries?
+
+```{r p_disc_pairing}
+# TODO generate comparable k-means clustering plot for pivot-discovery pair with percentage occurrence
+
+pivot_discovered_freq = read.csv("~/Work/Code/OMXW/virulence/outputs/pivot_discovery_frequency.csv", stringsAsFactors = FALSE)
+
+length(unique(pivot_discovered_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY))
+length(unique(pivot_discovered_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+summary(pivot_discovered_freq$COUNT)
+
+# verify there are no self comparisons
+length(which(pivot_discovered_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY == pivot_discovered_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+
+# verify there are no mirrors (like there are with pivot-copivot pairs)
+table(unique(pivot_discovered_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY) %in% unique(pivot_discovered_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY))
+table(unique(pivot_discovered_freq$NEIGHBOR_DOMAIN_ARCHITECTURE_UID_KEY) %in% unique(pivot_discovered_freq$PIVOT_DOMAIN_ARCHITECTURE_UID_KEY))
+
+
+# is there a pivot-discovered pair that always appear together?
+
+# compute counts as relative value since pivot occurrence is a function of what's been sequenced
+# calculate percent discovered appearance with pivot
+# e.g. discoveries that always appear with pivots would be 100%
+# pivots that occur with a diversity of discoveries would have many discoveries and those percentages would be lower
+
+pivot_freq_sum_d = pivot_discovered_freq %>% group_by(PIVOT_DOMAIN_ARCHITECTURE_UID_KEY) %>% summarize(PIVOT_SUM = sum(COUNT))
+# pivot frequency sums for pivot-discovered pairings
+
+# observation:
+# the sum of pivot observations with discoveries is higher than pivot observations with co-pivots
+# there are also more discovery uids, e.g. discovery diversity higher than co-pivots
+# QQ - how do the counts of discoveries compare to the counts of co-pivots though?
+# this is something that would be comparable between sets since n genomes is same for both calculations
+
+pivot_discovered_relative = merge(pivot_discovered_freq, pivot_freq_sum_d)
+pivot_discovered_relative$PERCENT_DISCOVERED_OCCURRENCE = pivot_discovered_relative$COUNT / pivot_discovered_relative$PIVOT_SUM * 100
+pivot_discovered_relative$PIVOT_PERCENT_TOTAL_GENOMES = pivot_discovered_relative$PIVOT_SUM / n_genomes * 100
+
+summary(pivot_discovered_relative$PERCENT_DISCOVERED_OCCURRENCE)
+summary(pivot_discovered_relative$PIVOT_PERCENT_TOTAL_GENOMES) # can be greater than 100% if domain architecture occurs multiple times in genomes
+
+length(which(pivot_discovered_relative$PERCENT_DISCOVERED_OCCURRENCE > 99))
+
+# TODO make sense of the plot below and press on
+# TODO start here
+
+# QQ - why are there so many pivots with discoveries? does this mean something biologically?
+# is this an artifact of the data processing?
+max(pivot_discovered_relative$COUNT)
+max(pivot_discovered_relative$PIVOT_SUM)
+max(pivot_copivot_relative$COUNT)
+max(pivot_copivot_relative$PIVOT_SUM)
+
+
+# does the pure discovered percentage just inflate the low ones?
+ggplot(pivot_discovered_relative, aes(y=COUNT, x=PIVOT_SUM, color = PERCENT_DISCOVERED_OCCURRENCE)) +
+  geom_point() +
+  scale_color_continuous() +
+  xlab("Total observations of pivot DA") +
+  xlim(c(0,14000000)) +
+  ylim(c(0,14000000)) +
+  ylab("Count of discovered observations per pivot")
+
+
+# maybe consider this for supplement? all points
+ggplot(pivot_discovered_relative, aes(x=PERCENT_DISCOVERED_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = PERCENT_DISCOVERED_OCCURRENCE)) +
+  geom_point() +
+  scale_color_continuous() +
+  xlab("Discovered percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  geom_hline(yintercept = 100) # single copy pivots
+
+pivot_discovered_relative_simple = pivot_discovered_relative %>% select(PERCENT_DISCOVERED_OCCURRENCE, PIVOT_PERCENT_TOTAL_GENOMES)
+
+set.seed(527)
+clustered_pivot_discovered_relative = kmeans(pivot_discovered_relative_simple, centers = 10)
+
+# cut to single copy proteins
+ggplot(pivot_discovered_relative, aes(x=PERCENT_DISCOVERED_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = as.factor(clustered_pivot_discovered_relative$cluster))) +
+  geom_point() +
+  xlab("Discovered percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  ylim(c(0,100)) +
+  labs(colour = "k-means cluster")
+  # geom_hline(yintercept = 75, color = "red") +
+  # geom_vline(xintercept = 75, color = "red")
+
+# all pairings - maybe for supplement if we don't use plot above
+ggplot(pivot_discovered_relative, aes(x=PERCENT_DISCOVERED_OCCURRENCE, y=PIVOT_PERCENT_TOTAL_GENOMES, color = as.factor(clustered_pivot_discovered_relative$cluster))) +
+  geom_point() +
+  xlab("Discovered percent occurrence per pivot") +
+  ylab("Pivot percent per total genomes") +
+  labs(colour = "k-means cluster")
+
+# silhouette coefficient
+# -1 to 1 higher better
+
+# observations
+# there really aren't any highly conserved discoveries across all organisms
+# e.g. > 75% and >75%
+# maybe better to look at things by genus
+# TODO look at the discoveries that do have high observation with the pivots though
+# that may just relate to the top discoveries plots from earlier though
+
+# TODO label points with protein names and GO codes for enriched function + add to paper
+
+```
+
+### Q6 Basic stats by genome of counts: Total virulence factors per genome, Total discoveries per genome, Total co-pivots per genome
+```{r perGenomeCounts}
+per_genome = read.csv("~/Work/Code/OMXW/virulence/outputs/genome_basic_stats.csv", stringsAsFactors = FALSE)
+
+table(per_genome$NEIGHBOR_TYPE)
+length(unique(per_genome$ACCESSION_NUMBER))
+per_genome$LONG_NEIGHBOR_TYPE = ""
+per_genome$LONG_NEIGHBOR_TYPE[which(per_genome$NEIGHBOR_TYPE == "C")] = "Co-pivot"
+per_genome$LONG_NEIGHBOR_TYPE[which(per_genome$NEIGHBOR_TYPE == "D")] = "Discovered"
+per_genome$LONG_NEIGHBOR_TYPE[which(per_genome$NEIGHBOR_TYPE == "P")] = "Pivot"
+
+
+# manuscript version
+ggplot(per_genome, aes(x=LONG_NEIGHBOR_TYPE, y=COUNT, fill = LONG_NEIGHBOR_TYPE)) +
+  geom_violin(width = 1.5) +
+  geom_boxplot(width = 0.1, color="grey", alpha=0.2) +
+  scale_fill_viridis_d() + 
+  scale_y_log10() +
+  theme(legend.position = "none") +
+  ylab("Count per genome") +
+  xlab("Domain architecture type") +
+  ggtitle("Distributions of domain architecture counts per genome")
+
+# plot everything, slow to load
+# ggplot(per_genome, aes(x=ACCESSION_NUMBER, y=COUNT, fill = NEIGHBOR_TYPE)) +
+#   geom_bar(position = "stack", stat="identity") +
+#   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+per_genome %>% group_by(NEIGHBOR_TYPE) %>% summarize(type_range=range(COUNT))
+per_genome %>% group_by(NEIGHBOR_TYPE) %>% summarize(type_mean=mean(COUNT))
+per_genome %>% group_by(NEIGHBOR_TYPE) %>% summarize(type_median=median(COUNT))
+
+
+# TODO if time/worthwile, we could pull the actual occurrence by DA type 
+# from the frequency pairing dfs above and do an updated violin of DA loadings basically
+# would need to add type to each df and extract pivot sums
+# pivot sums could be a little skewed though since a pivot could be counted in each dataframe
+# but the discovered occurrence counts and the co-pivot occurrence counts would be accurate
+
+
+```
+
+
+
+
+
+
+
+
