@@ -7,8 +7,7 @@ The following generates a table reporting the percent pivot, co-pivot, and disco
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [virulence_prediction_genus_pct_site_based.csv.gz](https://precision.fda.gov/home/files/file-Gj1Vv400ZqJvz5ykFZxYKzQF-2
-)
+Exported file is located at [virulence_prediction_genus_pct_site_based.csv.gz](https://precision.fda.gov/home/files/file-Gj1Vv400ZqJvz5ykFZxYKzQF-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Table Creation
 
