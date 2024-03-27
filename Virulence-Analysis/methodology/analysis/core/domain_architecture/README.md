@@ -7,7 +7,7 @@ Records the unique set of IPR codes for each protein as an ordered list construc
 * [Table Creation](#table-creation)
 * [Data Export](#data-export)
 
-Exported file is located at [viruence_prediction_domain_architecture.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z5x00ZqJf0G38JbzG1xqz-2)
+Exported file is located at [viruence_prediction_domain_architecture.csv.gz](https://precision.fda.gov/home/files/file-Gj1Z5x00ZqJf0G38JbzG1xqz-2). You will need a [precisionFDA](https://precision.fda.gov/) account to access.
 
 ### Table Creation
 
