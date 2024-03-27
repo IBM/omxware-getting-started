@@ -342,7 +342,7 @@ SELECT
   FROM
     DOMAIN_ARCHITECTURE
     ORDER BY 1
-" --path outputs/domain_architecture.csv
+" --path outputs/viruence_prediction_domain_architecture.csv
 ```
 
 OUTPUT

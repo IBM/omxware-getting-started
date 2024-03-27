@@ -287,7 +287,7 @@ sys	4m48.279s
 SELECT *
   FROM
     STANDOUT_DISCOVERIES
-" --path outputs/standout_discoveries.csv
+" --path outputs/virulence_prediction_standout_discoveries.csv
 ```
 
 OUTPUT
@@ -311,7 +311,7 @@ sys	0m7.892s
 SELECT *
   FROM
     STANDOUT_DISCOVERIES_PROTEIN
-" --path outputs/standout_discoveries_protein.csv
+" --path outputs/virulence_prediction_standout_discoveries_protein.csv
 ```
 
 OUTPUT
@@ -335,7 +335,7 @@ sys	0m9.456s
 SELECT *
   FROM
     STANDOUT_DISCOVERIES_IPR
-" --path outputs/standout_discoveries_ipr.csv
+" --path outputs/virulence_prediction_standout_discoveries_ipr.csv
 ```
 
 OUTPUT
@@ -637,7 +637,7 @@ sys	6m29.461s
 SELECT *
   FROM
     GENUS_STANDOUT_DISCOVERIES
-" --path outputs/genus_standout_discoveries.csv
+" --path outputs/virulence_prediction_genus_standout_discoveries.csv
 ```
 
 OUTPUT
@@ -661,7 +661,7 @@ sys	0m10.220s
 SELECT *
   FROM
     GENUS_STANDOUT_DISCOVERIES_PROTEIN
-" --path outputs/genus_standout_discoveries_protein.csv
+" --path outputs/virulence_prediction_genus_standout_discoveries_protein.csv
 ```
 
 OUTPUT
@@ -685,7 +685,7 @@ sys	0m14.983s
 SELECT *
   FROM
     GENUS_STANDOUT_DISCOVERIES_IPR
-" --path outputs/genus_standout_discoveries_ipr.csv
+" --path outputs/virulence_prediction_genus_standout_discoveries_ipr.csv
 ```
 
 OUTPUT
@@ -800,7 +800,7 @@ sys	1m30.171s
 SELECT *
   FROM
     PIVOT_COPIVOT_FREQUENCY
-" --path outputs/pivot_copivot_frequency.csv
+" --path outputs/virulence_prediction_pivot_copivot_frequency.csv
 ```
 
 OUTPUT
@@ -915,7 +915,7 @@ sys	1m20.112s
 SELECT *
   FROM
     PIVOT_DISCOVERY_FREQUENCY
-" --path outputs/pivot_discovery_frequency.csv
+" --path outputs/virulence_prediction_pivot_discovery_frequency.csv
 ```
 
 OUTPUT
@@ -1029,7 +1029,7 @@ sys	6m55.109s
 SELECT *
   FROM
     GENOME_BASIC_STATS
-" --path outputs/genome_basic_stats.csv
+" --path outputs/virulence_prediction_genome_basic_stats.csv
 ```
 
 OUTPUT
