@@ -12,7 +12,7 @@ matplotlib==3.6.2
 numpy==1.24.0
 packaging==22.0
 pandas==1.5.2
-Pillow==9.3.0
+Pillow==10.3.0
 py4j==0.10.9.5
 pyparsing==3.0.9
 pyspark==3.3.1
