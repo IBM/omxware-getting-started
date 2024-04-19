@@ -20,7 +20,7 @@ We used a 56 core virtual machine leveraging Intel(R) Xeon(R) Platinum 8260 CPU 
 
 The following environment was used for Python
 
-* Python Version - 3.9.5
+* Python Version - 3.9.10
 
 A python virtual environment was created using `python3.9 -m venv venv`
 
