@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/209213921.svg)](https://doi.org/10.5281/zenodo.14797144)
+
 ### Description:
 This folder contains core methodology for virulence factor prediction using gene co-localization and co-occurrence. It is applied to over 200K *de novo* and assembled bacterial genomes across 1,400 genera. The analtyics are included here and large data files are linked to deposits in the PrecisionFDA site (Note: request access to their site to view or download data).
 
