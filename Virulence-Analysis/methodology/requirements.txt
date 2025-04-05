@@ -5,7 +5,7 @@ contourpy==1.0.6
 cycler==0.11.0
 fastcluster==1.2.6
 fonttools==4.38.0
-idna==3.4
+idna==3.7
 kiwisolver==1.4.4
 kneed==0.8.1
 matplotlib==3.6.2
